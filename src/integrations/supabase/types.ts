@@ -14,7 +14,547 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      albums: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      event_responses: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          response_status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          response_status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          response_status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_responses_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          category: string
+          created_at: string
+          date: string
+          description: string | null
+          id: string
+          is_recurring: boolean
+          location: string | null
+          recurrence_rule: string | null
+          reminder_minutes: number | null
+          time: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          date: string
+          description?: string | null
+          id?: string
+          is_recurring?: boolean
+          location?: string | null
+          recurrence_rule?: string | null
+          reminder_minutes?: number | null
+          time?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          date?: string
+          description?: string | null
+          id?: string
+          is_recurring?: boolean
+          location?: string | null
+          recurrence_rule?: string | null
+          reminder_minutes?: number | null
+          time?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      milestones: {
+        Row: {
+          created_at: string
+          date: string
+          description: string | null
+          id: string
+          photo_id: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          description?: string | null
+          id?: string
+          photo_id?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          description?: string | null
+          id?: string
+          photo_id?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "milestones_photo_id_fkey"
+            columns: ["photo_id"]
+            isOneToOne: false
+            referencedRelation: "photos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      note_attachments: {
+        Row: {
+          created_at: string
+          file_path: string
+          file_size: number | null
+          file_type: string | null
+          id: string
+          note_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          file_path: string
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          note_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          file_path?: string
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          note_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "note_attachments_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      note_reactions: {
+        Row: {
+          created_at: string
+          id: string
+          note_id: string
+          reaction_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note_id: string
+          reaction_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note_id?: string
+          reaction_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "note_reactions_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      note_replies: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          note_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          note_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          note_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "note_replies_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notes: {
+        Row: {
+          category: string
+          content: string
+          created_at: string
+          id: string
+          is_archived: boolean
+          is_favorite: boolean
+          scheduled_date: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          content?: string
+          created_at?: string
+          id?: string
+          is_archived?: boolean
+          is_favorite?: boolean
+          scheduled_date?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          content?: string
+          created_at?: string
+          id?: string
+          is_archived?: boolean
+          is_favorite?: boolean
+          scheduled_date?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string | null
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      photos: {
+        Row: {
+          album_id: string | null
+          caption: string | null
+          created_at: string
+          file_path: string
+          file_size: number | null
+          height: number | null
+          id: string
+          is_favorite: boolean
+          tags: string[]
+          taken_at: string | null
+          user_id: string
+          width: number | null
+        }
+        Insert: {
+          album_id?: string | null
+          caption?: string | null
+          created_at?: string
+          file_path: string
+          file_size?: number | null
+          height?: number | null
+          id?: string
+          is_favorite?: boolean
+          tags?: string[]
+          taken_at?: string | null
+          user_id: string
+          width?: number | null
+        }
+        Update: {
+          album_id?: string | null
+          caption?: string | null
+          created_at?: string
+          file_path?: string
+          file_size?: number | null
+          height?: number | null
+          id?: string
+          is_favorite?: boolean
+          tags?: string[]
+          taken_at?: string | null
+          user_id?: string
+          width?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "photos_album_id_fkey"
+            columns: ["album_id"]
+            isOneToOne: false
+            referencedRelation: "albums"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          anniversary_date: string | null
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          id: string
+          location: string | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          anniversary_date?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          id: string
+          location?: string | null
+          name?: string
+          updated_at?: string
+        }
+        Update: {
+          anniversary_date?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          location?: string | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      settings: {
+        Row: {
+          created_at: string
+          id: string
+          key: string
+          updated_at: string
+          user_id: string
+          value: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          key: string
+          updated_at?: string
+          user_id: string
+          value?: Json
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          key?: string
+          updated_at?: string
+          user_id?: string
+          value?: Json
+        }
+        Relationships: []
+      }
+      wish_comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          user_id: string
+          wish_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          user_id: string
+          wish_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+          wish_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wish_comments_wish_id_fkey"
+            columns: ["wish_id"]
+            isOneToOne: false
+            referencedRelation: "wishes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wish_votes: {
+        Row: {
+          created_at: string
+          id: string
+          user_id: string
+          vote_value: number
+          wish_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          user_id: string
+          vote_value?: number
+          wish_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          user_id?: string
+          vote_value?: number
+          wish_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wish_votes_wish_id_fkey"
+            columns: ["wish_id"]
+            isOneToOne: false
+            referencedRelation: "wishes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wishes: {
+        Row: {
+          budget: number | null
+          category: string
+          created_at: string
+          deadline: string | null
+          description: string | null
+          id: string
+          is_completed: boolean
+          link: string | null
+          priority: number
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          budget?: number | null
+          category?: string
+          created_at?: string
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          is_completed?: boolean
+          link?: string | null
+          priority?: number
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          budget?: number | null
+          category?: string
+          created_at?: string
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          is_completed?: boolean
+          link?: string | null
+          priority?: number
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
