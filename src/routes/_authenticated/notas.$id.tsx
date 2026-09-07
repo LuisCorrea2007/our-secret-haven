@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArchiveRestore, ArrowLeft, Star, Trash2 } from "lucide-react";
+import { ArchiveRestore, ArrowLeft, Star, Trash2, Mic, FileText, Play, Download } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -11,6 +11,80 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSignedUrl } from "@/lib/media";
+
+function AttachmentItem({ attachment, canDelete, onDelete }: { 
+  attachment: any; 
+  canDelete: boolean; 
+  onDelete: () => void;
+}) {
+  const { data: url } = useSignedUrl(attachment.file_path);
+  
+  const formatSize = (bytes: number) => {
+    if (!bytes) return "";
+    const sizes = ["B", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${sizes[i]}`;
+  };
+
+  const handleDownload = async () => {
+    if (!url) return;
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = attachment.file_path.split("/").pop() || "archivo";
+    a.click();
+  };
+
+  if (attachment.attachment_type === "audio") {
+    return (
+      <div className="surface flex items-center gap-3 p-3 rounded-lg">
+        <div className="flex size-10 items-center justify-center rounded-full bg-primary/10">
+          <Mic className="size-5 text-primary" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium truncate">Nota de voz</p>
+          <p className="text-xs text-muted-foreground">{formatSize(attachment.file_size)}</p>
+        </div>
+        <audio src={url} controls className="h-8" />
+        <Button variant="ghost" size="icon" onClick={handleDownload}>
+          <Download className="size-4" />
+        </Button>
+        {canDelete && (
+          <Button variant="ghost" size="icon" onClick={onDelete}>
+            <Trash2 className="size-4 text-destructive" />
+          </Button>
+        )}
+      </div>
+    );
+  }
+
+  if (attachment.attachment_type === "pdf") {
+    return (
+      <div className="surface flex items-center gap-3 p-3 rounded-lg">
+        <div className="flex size-10 items-center justify-center rounded-full bg-red-100">
+          <FileText className="size-5 text-red-600" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium truncate">Documento PDF</p>
+          <p className="text-xs text-muted-foreground">{formatSize(attachment.file_size)}</p>
+        </div>
+        {url && (
+          <iframe src={`${url}#toolbar=0`} className="w-24 h-12 border rounded" title="PDF preview" />
+        )}
+        <Button variant="outline" size="sm" onClick={handleDownload}>
+          <Download className="mr-1 size-4" /> Descargar
+        </Button>
+        {canDelete && (
+          <Button variant="ghost" size="icon" onClick={onDelete}>
+            <Trash2 className="size-4 text-destructive" />
+          </Button>
+        )}
+      </div>
+    );
+  }
+
+  return null;
+}
 
 export const Route = createFileRoute("/_authenticated/notas/$id")({
   head: () => ({
@@ -63,6 +137,19 @@ function NoteDetail() {
         .from("note_reactions")
         .select("id, reaction_type, user_id")
         .eq("note_id", id);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const { data: attachments } = useQuery({
+    queryKey: ["note-attachments", id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("note_attachments")
+        .select("id, file_path, file_type, file_size, attachment_type, created_at")
+        .eq("note_id", id)
+        .order("created_at");
       if (error) throw error;
       return data ?? [];
     },
@@ -131,6 +218,54 @@ function NoteDetail() {
     onError: () => toast.error("Solo quien escribió la nota puede eliminarla"),
   });
 
+  const uploadAttachment = useMutation({
+    mutationFn: async (file: File) => {
+      if (!user) throw new Error("Sin sesión");
+      const ext = file.name.split(".").pop() || "file";
+      const filePath = `${user.id}/${crypto.randomUUID()}.${ext}`;
+
+      let attachmentType: "image" | "audio" | "pdf" | "link" = "image";
+      if (file.type.startsWith("audio/")) attachmentType = "audio";
+      else if (file.type === "application/pdf") attachmentType = "pdf";
+      else if (file.type.startsWith("image/")) attachmentType = "image";
+
+      const { error: uploadError } = await supabase.storage
+        .from("media")
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { error: dbError } = await supabase.from("note_attachments").insert({
+        note_id: id,
+        user_id: user.id,
+        file_path: filePath,
+        file_type: file.type,
+        file_size: file.size,
+        attachment_type: attachmentType,
+      });
+
+      if (dbError) throw dbError;
+    },
+    onSuccess: () => {
+      toast.success("Archivo adjuntado");
+      qc.invalidateQueries({ queryKey: ["note-attachments", id] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const deleteAttachment = useMutation({
+    mutationFn: async (attachmentId: string) => {
+      const { error } = await supabase.from("note_attachments").delete().eq("id", attachmentId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Archivo eliminado");
+      qc.invalidateQueries({ queryKey: ["note-attachments", id] });
+    },
+  });
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   if (isLoading) return <Skeleton className="h-64 rounded-2xl" />;
   if (!note)
     return (
@@ -164,6 +299,48 @@ function NoteDetail() {
         <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-foreground/90">
           {note.content}
         </p>
+
+        {/* Adjuntos: audios y PDFs */}
+        <div className="mt-6 space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="font-display text-lg font-semibold">Adjuntos</h3>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="audio/*,application/pdf,image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) uploadAttachment.mutate(file);
+                e.target.value = "";
+              }}
+            />
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <Mic className="mr-1 size-4" />
+              Agregar audio/PDF
+            </Button>
+          </div>
+
+          {attachments && attachments.length > 0 ? (
+            <div className="space-y-2">
+              {attachments.map((att) => (
+                <AttachmentItem
+                  key={att.id}
+                  attachment={att}
+                  canDelete={att.user_id === user?.id}
+                  onDelete={() => deleteAttachment.mutate(att.id)}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">Sin adjuntos todavía</p>
+          )}
+        </div>
 
         <div className="mt-6 flex flex-wrap items-center gap-2">
           {REACTIONS.map((r) => {

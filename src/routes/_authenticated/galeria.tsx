@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight, Images, Star, Trash2, Upload, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Images, Star, Trash2, Upload, X, Download, MessageCircle, Heart } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -9,6 +9,7 @@ import { compressImage, imageSize, uploadMedia, useSignedUrl, validateImage } fr
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
@@ -24,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { REACTIONS } from "@/lib/content";
 
 export const Route = createFileRoute("/_authenticated/galeria")({
   head: () => ({

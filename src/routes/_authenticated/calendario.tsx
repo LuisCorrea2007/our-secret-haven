@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CalendarHeart, Check, Plus, Trash2, X } from "lucide-react";
+import { CalendarHeart, Check, Plus, Trash2, X, Clock, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -156,6 +156,82 @@ function CalendarPage() {
     },
     onError: () => toast.error("Solo quien creó el plan puede eliminarlo"),
   });
+
+  // Cuenta regresiva para eventos próximos
+  function Countdown({ targetDate, time }: { targetDate: string; time?: string | null }) {
+    const [remaining, setRemaining] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+    useEffect(() => {
+      const calculate = () => {
+        const target = new Date(`${targetDate}T${time || "00:00:00"}`);
+        const now = new Date();
+        const diff = target.getTime() - now.getTime();
+
+        if (diff <= 0) {
+          setRemaining({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+          return;
+        }
+
+        setRemaining({
+          days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          minutes: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
+          seconds: Math.floor((diff % (1000 * 60)) / 1000),
+        });
+      };
+
+      calculate();
+      const interval = setInterval(calculate, 1000);
+      return () => clearInterval(interval);
+    }, [targetDate, time]);
+
+    return (
+      <div className="flex items-center gap-2 text-sm">
+        <Clock className="size-4 text-primary" />
+        <span className="font-medium">
+          {remaining.days}d {remaining.hours}h {remaining.minutes}m {remaining.seconds}s
+        </span>
+      </div>
+    );
+  }
+
+  // Exportar a Google Calendar
+  const exportToGoogleCalendar = (event: any) => {
+    const baseUrl = "https://calendar.google.com/calendar/render";
+    const params = new URLSearchParams({
+      action: "TEMPLATE",
+      text: event.title,
+      details: event.description || "",
+      location: event.location || "",
+      dates: `${event.date.replace(/-/g, "")}T${(event.time || "000000").replace(":", "")}00/${event.date.replace(/-/g, "")}T${(event.time || "235959").replace(":", "")}00`,
+    });
+    window.open(`${baseUrl}?${params.toString()}`, "_blank");
+  };
+
+  // Agregar al calendario del dispositivo (iCal)
+  const addToDeviceCalendar = (event: any) => {
+    const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Nuestro Espacio//ES
+BEGIN:VEVENT
+UID:${event.id}@nuestroespacio
+DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").split(".")[0]}Z
+DTSTART:${event.date.replace(/-/g, "")}T${(event.time || "000000").replace(":", "")}00
+DTEND:${event.date.replace(/-/g, "")}T${(event.time || "235959").replace(":", "")}00
+SUMMARY:${event.title}
+DESCRIPTION:${event.description || ""}
+LOCATION:${event.location || ""}
+END:VEVENT
+END:VCALENDAR`;
+
+    const blob = new Blob([icsContent], { type: "text/calendar" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${event.title}.ics`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const cells = monthMatrix(cursor.y, cursor.m);
   const monthLabel = new Date(cursor.y, cursor.m, 1).toLocaleDateString("es", {
@@ -359,6 +435,31 @@ function CalendarPage() {
                 {e.description && (
                   <p className="mt-1 text-sm text-muted-foreground">{e.description}</p>
                 )}
+                {/* Cuenta regresiva para eventos futuros */}
+                {new Date(`${e.date}T${e.time || "00:00:00"}`) > new Date() && e.countdown_enabled !== false && (
+                  <div className="mt-2">
+                    <Countdown targetDate={e.date} time={e.time} />
+                  </div>
+                )}
+                {/* Botones de calendario */}
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="rounded-full"
+                    onClick={() => exportToGoogleCalendar(e)}
+                  >
+                    <ExternalLink className="mr-1 size-4" /> Google Calendar
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="rounded-full"
+                    onClick={() => addToDeviceCalendar(e)}
+                  >
+                    <CalendarHeart className="mr-1 size-4" /> Descargar .ics
+                  </Button>
+                </div>
                 {e.user_id !== user?.id && (
                   <div className="mt-3 flex gap-2">
                     <Button

@@ -1,0 +1,1 @@
+import{n as e,s as t}from"./button-CIFezWU9.js";var n=t();function r({className:t,...r}){return(0,n.jsx)(`div`,{className:e(`animate-pulse rounded-md bg-primary/10`,t),...r})}export{r as t};
