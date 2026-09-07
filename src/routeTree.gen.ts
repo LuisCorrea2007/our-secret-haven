@@ -16,8 +16,10 @@ import { Route as AuthenticatedAjustesRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedCalendarioRouteImport } from './routes/_authenticated/calendario'
 import { Route as AuthenticatedDeseosRouteImport } from './routes/_authenticated/deseos'
 import { Route as AuthenticatedDiarioRouteImport } from './routes/_authenticated/diario'
+import { Route as AuthenticatedDiversionRouteImport } from './routes/_authenticated/diversion'
 import { Route as AuthenticatedGaleriaRouteImport } from './routes/_authenticated/galeria'
 import { Route as AuthenticatedPanelRouteImport } from './routes/_authenticated/panel'
+import { Route as AuthenticatedVideosRouteImport } from './routes/_authenticated/videos'
 import { Route as AuthenticatedNotasIndexRouteImport } from './routes/_authenticated/notas.index'
 import { Route as AuthenticatedNotasIdRouteImport } from './routes/_authenticated/notas.$id'
 
@@ -55,6 +57,11 @@ const AuthenticatedDiarioRoute = AuthenticatedDiarioRouteImport.update({
   path: '/diario',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDiversionRoute = AuthenticatedDiversionRouteImport.update({
+  id: '/diversion',
+  path: '/diversion',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedGaleriaRoute = AuthenticatedGaleriaRouteImport.update({
   id: '/galeria',
   path: '/galeria',
@@ -63,6 +70,11 @@ const AuthenticatedGaleriaRoute = AuthenticatedGaleriaRouteImport.update({
 const AuthenticatedPanelRoute = AuthenticatedPanelRouteImport.update({
   id: '/panel',
   path: '/panel',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedVideosRoute = AuthenticatedVideosRouteImport.update({
+  id: '/videos',
+  path: '/videos',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedNotasIndexRoute = AuthenticatedNotasIndexRouteImport.update({
@@ -83,8 +95,10 @@ export interface FileRoutesByFullPath {
   '/calendario': typeof AuthenticatedCalendarioRoute
   '/deseos': typeof AuthenticatedDeseosRoute
   '/diario': typeof AuthenticatedDiarioRoute
+  '/diversion': typeof AuthenticatedDiversionRoute
   '/galeria': typeof AuthenticatedGaleriaRoute
   '/panel': typeof AuthenticatedPanelRoute
+  '/videos': typeof AuthenticatedVideosRoute
   '/notas/$id': typeof AuthenticatedNotasIdRoute
   '/notas/': typeof AuthenticatedNotasIndexRoute
 }
@@ -95,8 +109,10 @@ export interface FileRoutesByTo {
   '/calendario': typeof AuthenticatedCalendarioRoute
   '/deseos': typeof AuthenticatedDeseosRoute
   '/diario': typeof AuthenticatedDiarioRoute
+  '/diversion': typeof AuthenticatedDiversionRoute
   '/galeria': typeof AuthenticatedGaleriaRoute
   '/panel': typeof AuthenticatedPanelRoute
+  '/videos': typeof AuthenticatedVideosRoute
   '/notas/$id': typeof AuthenticatedNotasIdRoute
   '/notas': typeof AuthenticatedNotasIndexRoute
 }
@@ -109,8 +125,10 @@ export interface FileRoutesById {
   '/_authenticated/calendario': typeof AuthenticatedCalendarioRoute
   '/_authenticated/deseos': typeof AuthenticatedDeseosRoute
   '/_authenticated/diario': typeof AuthenticatedDiarioRoute
+  '/_authenticated/diversion': typeof AuthenticatedDiversionRoute
   '/_authenticated/galeria': typeof AuthenticatedGaleriaRoute
   '/_authenticated/panel': typeof AuthenticatedPanelRoute
+  '/_authenticated/videos': typeof AuthenticatedVideosRoute
   '/_authenticated/notas/$id': typeof AuthenticatedNotasIdRoute
   '/_authenticated/notas/': typeof AuthenticatedNotasIndexRoute
 }
@@ -123,8 +141,10 @@ export interface FileRouteTypes {
     | '/calendario'
     | '/deseos'
     | '/diario'
+    | '/diversion'
     | '/galeria'
     | '/panel'
+    | '/videos'
     | '/notas/$id'
     | '/notas/'
   fileRoutesByTo: FileRoutesByTo
@@ -135,8 +155,10 @@ export interface FileRouteTypes {
     | '/calendario'
     | '/deseos'
     | '/diario'
+    | '/diversion'
     | '/galeria'
     | '/panel'
+    | '/videos'
     | '/notas/$id'
     | '/notas'
   id:
@@ -148,8 +170,10 @@ export interface FileRouteTypes {
     | '/_authenticated/calendario'
     | '/_authenticated/deseos'
     | '/_authenticated/diario'
+    | '/_authenticated/diversion'
     | '/_authenticated/galeria'
     | '/_authenticated/panel'
+    | '/_authenticated/videos'
     | '/_authenticated/notas/$id'
     | '/_authenticated/notas/'
   fileRoutesById: FileRoutesById
@@ -211,6 +235,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDiarioRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/diversion': {
+      id: '/_authenticated/diversion'
+      path: '/diversion'
+      fullPath: '/diversion'
+      preLoaderRoute: typeof AuthenticatedDiversionRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/galeria': {
       id: '/_authenticated/galeria'
       path: '/galeria'
@@ -223,6 +254,13 @@ declare module '@tanstack/react-router' {
       path: '/panel'
       fullPath: '/panel'
       preLoaderRoute: typeof AuthenticatedPanelRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/videos': {
+      id: '/_authenticated/videos'
+      path: '/videos'
+      fullPath: '/videos'
+      preLoaderRoute: typeof AuthenticatedVideosRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/notas/': {
@@ -247,8 +285,10 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCalendarioRoute: typeof AuthenticatedCalendarioRoute
   AuthenticatedDeseosRoute: typeof AuthenticatedDeseosRoute
   AuthenticatedDiarioRoute: typeof AuthenticatedDiarioRoute
+  AuthenticatedDiversionRoute: typeof AuthenticatedDiversionRoute
   AuthenticatedGaleriaRoute: typeof AuthenticatedGaleriaRoute
   AuthenticatedPanelRoute: typeof AuthenticatedPanelRoute
+  AuthenticatedVideosRoute: typeof AuthenticatedVideosRoute
   AuthenticatedNotasIdRoute: typeof AuthenticatedNotasIdRoute
   AuthenticatedNotasIndexRoute: typeof AuthenticatedNotasIndexRoute
 }
@@ -258,8 +298,10 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCalendarioRoute: AuthenticatedCalendarioRoute,
   AuthenticatedDeseosRoute: AuthenticatedDeseosRoute,
   AuthenticatedDiarioRoute: AuthenticatedDiarioRoute,
+  AuthenticatedDiversionRoute: AuthenticatedDiversionRoute,
   AuthenticatedGaleriaRoute: AuthenticatedGaleriaRoute,
   AuthenticatedPanelRoute: AuthenticatedPanelRoute,
+  AuthenticatedVideosRoute: AuthenticatedVideosRoute,
   AuthenticatedNotasIdRoute: AuthenticatedNotasIdRoute,
   AuthenticatedNotasIndexRoute: AuthenticatedNotasIndexRoute,
 }

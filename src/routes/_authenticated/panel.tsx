@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { CalendarHeart, Heart, Images, NotebookPen, Stars } from "lucide-react";
+import { CalendarHeart, Heart, Images, NotebookPen, Stars, Laugh, Video } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { anniversaryOf, useProfiles } from "@/hooks/use-profiles";
@@ -147,12 +147,14 @@ function Panel() {
         <p className="mx-auto mt-6 max-w-md text-sm italic text-muted-foreground">“{quote}”</p>
       </section>
 
-      <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <section className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
         {[
           { label: "Notas", value: stats?.notas, icon: NotebookPen, to: "/notas" as const },
           { label: "Fotos", value: stats?.fotos, icon: Images, to: "/galeria" as const },
           { label: "Citas", value: stats?.citas, icon: CalendarHeart, to: "/calendario" as const },
           { label: "Deseos", value: stats?.deseos, icon: Stars, to: "/deseos" as const },
+          { label: "Diversión", value: "∞", icon: Laugh, to: "/diversion" as const },
+          { label: "Videos", value: "", icon: Video, to: "/videos" as const },
         ].map((s) => (
           <Link key={s.label} to={s.to} className="surface p-4 transition-shadow hover:shadow-[var(--shadow-lift)]">
             <s.icon className="size-4 text-primary" />
