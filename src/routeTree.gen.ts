@@ -13,6 +13,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedCalendarioRouteImport } from './routes/_authenticated/calendario'
+import { Route as AuthenticatedDeseosRouteImport } from './routes/_authenticated/deseos'
+import { Route as AuthenticatedDiarioRouteImport } from './routes/_authenticated/diario'
 import { Route as AuthenticatedGaleriaRouteImport } from './routes/_authenticated/galeria'
 import { Route as AuthenticatedPanelRouteImport } from './routes/_authenticated/panel'
 import { Route as AuthenticatedNotasIndexRouteImport } from './routes/_authenticated/notas.index'
@@ -35,6 +37,16 @@ const AuthRoute = AuthRouteImport.update({
 const AuthenticatedCalendarioRoute = AuthenticatedCalendarioRouteImport.update({
   id: '/calendario',
   path: '/calendario',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDeseosRoute = AuthenticatedDeseosRouteImport.update({
+  id: '/deseos',
+  path: '/deseos',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDiarioRoute = AuthenticatedDiarioRouteImport.update({
+  id: '/diario',
+  path: '/diario',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedGaleriaRoute = AuthenticatedGaleriaRouteImport.update({
@@ -62,6 +74,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/calendario': typeof AuthenticatedCalendarioRoute
+  '/deseos': typeof AuthenticatedDeseosRoute
+  '/diario': typeof AuthenticatedDiarioRoute
   '/galeria': typeof AuthenticatedGaleriaRoute
   '/panel': typeof AuthenticatedPanelRoute
   '/notas/$id': typeof AuthenticatedNotasIdRoute
@@ -71,6 +85,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/calendario': typeof AuthenticatedCalendarioRoute
+  '/deseos': typeof AuthenticatedDeseosRoute
+  '/diario': typeof AuthenticatedDiarioRoute
   '/galeria': typeof AuthenticatedGaleriaRoute
   '/panel': typeof AuthenticatedPanelRoute
   '/notas/$id': typeof AuthenticatedNotasIdRoute
@@ -82,6 +98,8 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/calendario': typeof AuthenticatedCalendarioRoute
+  '/_authenticated/deseos': typeof AuthenticatedDeseosRoute
+  '/_authenticated/diario': typeof AuthenticatedDiarioRoute
   '/_authenticated/galeria': typeof AuthenticatedGaleriaRoute
   '/_authenticated/panel': typeof AuthenticatedPanelRoute
   '/_authenticated/notas/$id': typeof AuthenticatedNotasIdRoute
@@ -93,6 +111,8 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/calendario'
+    | '/deseos'
+    | '/diario'
     | '/galeria'
     | '/panel'
     | '/notas/$id'
@@ -102,6 +122,8 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/calendario'
+    | '/deseos'
+    | '/diario'
     | '/galeria'
     | '/panel'
     | '/notas/$id'
@@ -112,6 +134,8 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/calendario'
+    | '/_authenticated/deseos'
+    | '/_authenticated/diario'
     | '/_authenticated/galeria'
     | '/_authenticated/panel'
     | '/_authenticated/notas/$id'
@@ -154,6 +178,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCalendarioRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/deseos': {
+      id: '/_authenticated/deseos'
+      path: '/deseos'
+      fullPath: '/deseos'
+      preLoaderRoute: typeof AuthenticatedDeseosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/diario': {
+      id: '/_authenticated/diario'
+      path: '/diario'
+      fullPath: '/diario'
+      preLoaderRoute: typeof AuthenticatedDiarioRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/galeria': {
       id: '/_authenticated/galeria'
       path: '/galeria'
@@ -187,6 +225,8 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCalendarioRoute: typeof AuthenticatedCalendarioRoute
+  AuthenticatedDeseosRoute: typeof AuthenticatedDeseosRoute
+  AuthenticatedDiarioRoute: typeof AuthenticatedDiarioRoute
   AuthenticatedGaleriaRoute: typeof AuthenticatedGaleriaRoute
   AuthenticatedPanelRoute: typeof AuthenticatedPanelRoute
   AuthenticatedNotasIdRoute: typeof AuthenticatedNotasIdRoute
@@ -195,6 +235,8 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCalendarioRoute: AuthenticatedCalendarioRoute,
+  AuthenticatedDeseosRoute: AuthenticatedDeseosRoute,
+  AuthenticatedDiarioRoute: AuthenticatedDiarioRoute,
   AuthenticatedGaleriaRoute: AuthenticatedGaleriaRoute,
   AuthenticatedPanelRoute: AuthenticatedPanelRoute,
   AuthenticatedNotasIdRoute: AuthenticatedNotasIdRoute,

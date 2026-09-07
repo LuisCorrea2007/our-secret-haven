@@ -249,7 +249,7 @@ function GalleryPage() {
 
   async function removePhoto(p: Photo) {
     const { error } = await supabase.from("photos").delete().eq("id", p.id);
-    if (error) return toast.error("Solo quien subió la foto puede eliminarla");
+    if (error) toast.error("Solo quien subió la foto puede eliminarla"); return;
     await supabase.storage.from("media").remove([p.file_path]);
     setLightbox(null);
     qc.invalidateQueries({ queryKey: ["photos"] });

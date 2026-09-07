@@ -44,8 +44,8 @@ function AuthPage() {
     const form = new FormData(e.currentTarget);
     const email = emailSchema.safeParse(form.get("email"));
     const password = passSchema.safeParse(form.get("password"));
-    if (!email.success) return toast.error(email.error.issues[0]!.message);
-    if (!password.success) return toast.error(password.error.issues[0]!.message);
+    if (!email.success) toast.error(email.error.issues[0]!.message); return;
+    if (!password.success) toast.error(password.error.issues[0]!.message); return;
 
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({
@@ -53,7 +53,7 @@ function AuthPage() {
       password: password.data,
     });
     setLoading(false);
-    if (error) return toast.error("No pudimos entrar: revisa el correo y la contraseña");
+    if (error) toast.error("No pudimos entrar: revisa el correo y la contraseña"); return;
     navigate({ to: "/panel", replace: true });
   }
 
@@ -63,9 +63,9 @@ function AuthPage() {
     const name = nameSchema.safeParse(form.get("name"));
     const email = emailSchema.safeParse(form.get("email"));
     const password = passSchema.safeParse(form.get("password"));
-    if (!name.success) return toast.error(name.error.issues[0]!.message);
-    if (!email.success) return toast.error(email.error.issues[0]!.message);
-    if (!password.success) return toast.error(password.error.issues[0]!.message);
+    if (!name.success) toast.error(name.error.issues[0]!.message); return;
+    if (!email.success) toast.error(email.error.issues[0]!.message); return;
+    if (!password.success) toast.error(password.error.issues[0]!.message); return;
 
     setLoading(true);
     const { error } = await supabase.auth.signUp({
@@ -77,7 +77,7 @@ function AuthPage() {
       },
     });
     setLoading(false);
-    if (error) return toast.error(error.message);
+    if (error) toast.error(error.message); return;
     toast.success("Cuenta creada. Si te pedimos confirmar el correo, revisa tu bandeja.");
     navigate({ to: "/panel", replace: true });
   }
@@ -89,7 +89,7 @@ function AuthPage() {
     });
     if (result.error) {
       setLoading(false);
-      return toast.error("No pudimos conectar con Google");
+      toast.error("No pudimos conectar con Google"); return;
     }
     if (result.redirected) return;
     navigate({ to: "/panel", replace: true });
@@ -99,11 +99,11 @@ function AuthPage() {
     const email = window.prompt("¿A qué correo enviamos el enlace de recuperación?");
     if (!email) return;
     const parsed = emailSchema.safeParse(email);
-    if (!parsed.success) return toast.error("Correo inválido");
+    if (!parsed.success) toast.error("Correo inválido"); return;
     const { error } = await supabase.auth.resetPasswordForEmail(parsed.data, {
       redirectTo: `${window.location.origin}/auth`,
     });
-    if (error) return toast.error(error.message);
+    if (error) toast.error(error.message); return;
     toast.success("Te enviamos un enlace para restablecer la contraseña");
   }
 
