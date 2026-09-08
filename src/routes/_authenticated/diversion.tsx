@@ -52,7 +52,7 @@ type FunCategory = typeof FUN_CATEGORIES[number]["value"];
 
 interface FunItem {
   id: string;
-  category: FunCategory;
+  category: string;
   content: string;
   answer?: string | null;
   options?: string[] | null;
@@ -323,7 +323,7 @@ function FunCard({ item, canDelete, onDelete }: { item: FunItem; canDelete: bool
         
         {item.category === "trivia" && item.options && (
           <div className="mt-4 space-y-2">
-            <RadioGroup value={selectedOption || undefined}>
+            <RadioGroup value={selectedOption ?? ""}>
               {item.options.map((option, idx) => (
                 <div key={idx} className="flex items-center space-x-2">
                   <RadioGroupItem

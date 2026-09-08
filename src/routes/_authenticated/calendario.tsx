@@ -79,7 +79,7 @@ function CalendarPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("events")
-        .select("id, title, description, date, time, location, category, user_id")
+        .select("id, title, description, date, time, location, category, user_id, countdown_enabled")
         .order("date");
       if (error) throw error;
       return data ?? [];
