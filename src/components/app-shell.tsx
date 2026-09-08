@@ -6,11 +6,13 @@ import {
   CalendarHeart,
   Heart,
   Images,
+  Laugh,
   LogOut,
   NotebookPen,
   Settings,
   Sparkles,
   Stars,
+  Video,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -36,9 +38,11 @@ const NAV = [
   { to: "/panel", label: "Panel", icon: Sparkles },
   { to: "/notas", label: "Notas", icon: NotebookPen },
   { to: "/galeria", label: "Galería", icon: Images },
+  { to: "/videos", label: "Videos", icon: Video },
   { to: "/calendario", label: "Citas", icon: CalendarHeart },
   { to: "/deseos", label: "Deseos", icon: Stars },
   { to: "/diario", label: "Diario", icon: Heart },
+  { to: "/diversion", label: "Diversión", icon: Laugh },
 ] as const;
 
 type NotificationRow = {
