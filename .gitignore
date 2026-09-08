@@ -17,20 +17,17 @@ yarn-error.log*
 .env.local
 .env.*
 
-# Editors
+# IDE files
 .vscode/
 .idea/
 *.swp
 *.swo
+*.tmp
 
 # Logs
 *.log
 
-# Temporary files
-*.tmp
-.DS_Store
-Thumbs.db
-
-# Package manager
-package-lock.json
+# Coverage
+coverage/
+.nyc_output/
 ```
