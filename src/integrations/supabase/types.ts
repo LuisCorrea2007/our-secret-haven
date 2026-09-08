@@ -76,6 +76,7 @@ export type Database = {
       events: {
         Row: {
           category: string
+          countdown_enabled: boolean
           created_at: string
           date: string
           description: string | null
@@ -91,6 +92,7 @@ export type Database = {
         }
         Insert: {
           category?: string
+          countdown_enabled?: boolean
           created_at?: string
           date: string
           description?: string | null
@@ -106,6 +108,7 @@ export type Database = {
         }
         Update: {
           category?: string
+          countdown_enabled?: boolean
           created_at?: string
           date?: string
           description?: string | null
@@ -116,6 +119,39 @@ export type Database = {
           reminder_minutes?: number | null
           time?: string | null
           title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      fun_items: {
+        Row: {
+          answer: string | null
+          category: string
+          content: string
+          created_at: string
+          id: string
+          options: string[] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          answer?: string | null
+          category?: string
+          content: string
+          created_at?: string
+          id?: string
+          options?: string[] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          answer?: string | null
+          category?: string
+          content?: string
+          created_at?: string
+          id?: string
+          options?: string[] | null
           updated_at?: string
           user_id?: string
         }
@@ -164,30 +200,36 @@ export type Database = {
       }
       note_attachments: {
         Row: {
+          attachment_type: string
           created_at: string
           file_path: string
           file_size: number | null
           file_type: string | null
           id: string
           note_id: string
+          url: string | null
           user_id: string
         }
         Insert: {
+          attachment_type?: string
           created_at?: string
           file_path: string
           file_size?: number | null
           file_type?: string | null
           id?: string
           note_id: string
+          url?: string | null
           user_id: string
         }
         Update: {
+          attachment_type?: string
           created_at?: string
           file_path?: string
           file_size?: number | null
           file_type?: string | null
           id?: string
           note_id?: string
+          url?: string | null
           user_id?: string
         }
         Relationships: [
@@ -443,6 +485,74 @@ export type Database = {
           updated_at?: string
           user_id?: string
           value?: Json
+        }
+        Relationships: []
+      }
+      video_comentarios: {
+        Row: {
+          contenido: string
+          created_at: string
+          id: string
+          user_id: string
+          video_id: string
+        }
+        Insert: {
+          contenido: string
+          created_at?: string
+          id?: string
+          user_id: string
+          video_id: string
+        }
+        Update: {
+          contenido?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+          video_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_comentarios_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "videos_diarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      videos_diarios: {
+        Row: {
+          created_at: string
+          descripcion: string | null
+          file_path: string
+          file_size: number | null
+          file_type: string | null
+          id: string
+          titulo: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          descripcion?: string | null
+          file_path: string
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          titulo: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          descripcion?: string | null
+          file_path?: string
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          titulo?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
