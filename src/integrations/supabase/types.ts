@@ -41,6 +41,30 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          expires_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       event_responses: {
         Row: {
           created_at: string
@@ -350,6 +374,7 @@ export type Database = {
           created_at: string
           id: string
           is_read: boolean
+          link: string | null
           message: string | null
           title: string
           type: string
@@ -359,6 +384,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_read?: boolean
+          link?: string | null
           message?: string | null
           title: string
           type?: string
@@ -368,12 +394,77 @@ export type Database = {
           created_at?: string
           id?: string
           is_read?: boolean
+          link?: string | null
           message?: string | null
           title?: string
           type?: string
           user_id?: string
         }
         Relationships: []
+      }
+      photo_comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          photo_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          photo_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          photo_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "photo_comments_photo_id_fkey"
+            columns: ["photo_id"]
+            isOneToOne: false
+            referencedRelation: "photos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      photo_reactions: {
+        Row: {
+          created_at: string
+          id: string
+          photo_id: string
+          reaction_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          photo_id: string
+          reaction_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          photo_id?: string
+          reaction_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "photo_reactions_photo_id_fkey"
+            columns: ["photo_id"]
+            isOneToOne: false
+            referencedRelation: "photos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       photos: {
         Row: {
@@ -435,7 +526,10 @@ export type Database = {
           created_at: string
           email: string | null
           id: string
+          latitude: number | null
           location: string | null
+          location_updated_at: string | null
+          longitude: number | null
           name: string
           updated_at: string
         }
@@ -445,7 +539,10 @@ export type Database = {
           created_at?: string
           email?: string | null
           id: string
+          latitude?: number | null
           location?: string | null
+          location_updated_at?: string | null
+          longitude?: number | null
           name?: string
           updated_at?: string
         }
@@ -455,9 +552,33 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          latitude?: number | null
           location?: string | null
+          location_updated_at?: string | null
+          longitude?: number | null
           name?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      push_tokens: {
+        Row: {
+          created_at: string
+          id: string
+          token: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          token: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          token?: string
+          user_id?: string
         }
         Relationships: []
       }
