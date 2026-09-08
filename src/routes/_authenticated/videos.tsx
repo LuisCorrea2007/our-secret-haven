@@ -209,7 +209,7 @@ function VideosPage() {
             <VideoCard
               key={video.id}
               video={video}
-              profiles={profiles}
+              profiles={profiles ?? []}
               nameOf={nameOf}
               onComentar={(contenido) =>
                 agregarComentario.mutate({ videoId: video.id, contenido })

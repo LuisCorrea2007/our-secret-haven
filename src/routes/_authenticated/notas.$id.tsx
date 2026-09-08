@@ -147,7 +147,7 @@ function NoteDetail() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("note_attachments")
-        .select("id, file_path, file_type, file_size, attachment_type, created_at")
+        .select("id, file_path, file_type, file_size, attachment_type, created_at, user_id, url")
         .eq("note_id", id)
         .order("created_at");
       if (error) throw error;
