@@ -3,6 +3,9 @@ package app.espacionuestro.android.data.remote
 import app.espacionuestro.android.BuildConfig
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.storage.Storage
+import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.createSupabaseClient
 
 /**
@@ -23,6 +26,9 @@ object SupabaseClientProvider {
                 supabaseKey = BuildConfig.SUPABASE_PUBLISHABLE_KEY
             ) {
                 install(Auth)
+                install(Postgrest)
+                install(Storage)
+                install(Realtime)
             }
         }
     }

@@ -80,13 +80,13 @@ fun EspacioNuestroApp() {
         val contentModifier = Modifier.padding(padding)
         when (selected) {
             0 -> HomeScreen(contentModifier, onOpenNotes = { selected = 1 }, onOpenGallery = { selected = 2 }, onOpenAgenda = { selected = 4 }, onOpenMore = { selected = 5 })
-            1 -> NotesScreen(contentModifier)
+            1 -> CloudNotesScreen(contentModifier)
             2 -> GalleryScreen(contentModifier)
             3 -> VideosScreen(contentModifier)
             4 -> CalendarScreen(contentModifier)
-            5 -> WishesScreen(contentModifier)
-            6 -> DiaryScreen(contentModifier)
-            7 -> FunScreen(contentModifier)
+            5 -> CloudWishesScreen(contentModifier)
+            6 -> CloudDiaryScreen(contentModifier)
+            7 -> CloudFunScreen(contentModifier)
             else -> SettingsScreen(contentModifier) { signedIn = false }
         }
     }
