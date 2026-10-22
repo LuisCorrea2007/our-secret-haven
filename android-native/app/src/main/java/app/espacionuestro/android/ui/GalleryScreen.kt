@@ -61,7 +61,7 @@ fun GalleryScreen(modifier:Modifier=Modifier){
   val visible=memories.filter{!onlyFavorites||it.favorite}
   if(visible.isEmpty()) Card(shape=RoundedCornerShape(20.dp)){Column(Modifier.fillMaxWidth().padding(22.dp),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(8.dp)){Icon(Icons.Default.AddPhotoAlternate,null,modifier=Modifier.size(34.dp),tint=MaterialTheme.colorScheme.primary);Text(if(onlyFavorites)"Aún no hay favoritos" else "Tu álbum empieza aquí",style=MaterialTheme.typography.titleMedium);Text(if(onlyFavorites)"Marca recuerdos con el corazón para encontrarlos aquí." else "Añade fotos y vídeos. La selección se conserva en este dispositivo y no se sube a ningún servidor.",color=MaterialTheme.colorScheme.onSurfaceVariant)}}
   else LazyVerticalGrid(columns=GridCells.Adaptive(minSize=140.dp),contentPadding=PaddingValues(bottom=24.dp),horizontalArrangement=Arrangement.spacedBy(9.dp),verticalArrangement=Arrangement.spacedBy(9.dp),modifier=Modifier.weight(1f)){
-   items(visible,key{it.uri}){memory->
+   items(visible, key = { it.uri }){memory->
     Card(shape=RoundedCornerShape(16.dp)){
      Column {
       AsyncImage(model=Uri.parse(memory.uri),contentDescription="Recuerdo de la galería",modifier=Modifier.fillMaxWidth().height(150.dp))
