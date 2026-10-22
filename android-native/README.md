@@ -19,8 +19,22 @@ Aplicación Android nativa construida con Kotlin y Jetpack Compose, mantenida en
 - **Notas:** crear, listar, marcar como favoritas y eliminar notas. Se guardan localmente con Room y funcionan sin conexión.
 - **Galería:** selector nativo de Android para imágenes y vídeos; la selección se muestra en una cuadrícula local y no se carga a un servidor.
 - **Agenda:** primera pantalla informativa; eventos persistentes, sincronización y recordatorios aún pendientes.
-- **Nosotros:** pantalla informativa nativa.
+- **Nosotros:** pantalla informativa nativa y base de inicio de sesión/registro por correo con Supabase Auth.
+- **Configuración de Supabase:** lee `supabase.url` y `supabase.publishableKey` desde `android-native/local.properties`, o `SUPABASE_URL` y `SUPABASE_PUBLISHABLE_KEY` desde el entorno de CI. Nunca usar `service_role` en una app cliente.
 - **CI:** GitHub Actions compila `assembleDebug` en esta rama y publica el APK como artefacto si la compilación termina correctamente.
+
+## Configurar Supabase para Android
+
+Añade estas propiedades a \`android-native/local.properties\` (conserva también el \`sdk.dir\` que Android Studio haya generado):
+
+\`\`\`properties
+supabase.url=https://TU-PROYECTO.supabase.co
+supabase.publishableKey=TU_CLAVE_PUBLICABLE
+\`\`\`
+
+También se admiten las variables de entorno \`SUPABASE_URL\` y \`SUPABASE_PUBLISHABLE_KEY\`. No subas \`local.properties\` al repositorio ni uses claves \`service_role\`/secretas en Android. Si Supabase no está configurado, las funciones locales siguen disponibles y la pantalla de cuenta indica que falta configuración.
+
+La autenticación es una primera integración. La sincronización de notas y medios sigue desactivada hasta auditar y corregir las políticas RLS de los datos compartidos.
 
 ## Compilar localmente
 
