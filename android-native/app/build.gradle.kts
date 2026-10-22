@@ -21,6 +21,12 @@ fun configValue(property: String, environment: String): String =
 val supabaseUrl = configValue("supabase.url", "SUPABASE_URL")
 val supabasePublishableKey = configValue("supabase.publishableKey", "SUPABASE_PUBLISHABLE_KEY")
 
+val keystoreProperties = Properties().apply {
+    val keyFile = rootProject.file("keystore.properties")
+    if (keyFile.exists()) keyFile.inputStream().use { load(it) }
+}
+
+
 android {
     namespace = "app.espacionuestro.android"
     compileSdk = 36
@@ -35,7 +41,7 @@ android {
         minSdk = 26
         targetSdk = 36
         versionCode = 1
-        versionName = "0.2.0"
+        versionName = "1.0.0"
         buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
         buildConfigField("String", "SUPABASE_PUBLISHABLE_KEY", "\"$supabasePublishableKey\"")
     }
@@ -49,6 +55,14 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
+            if (keystoreProperties.getProperty("storeFile") != null) {
+                signingConfig = signingConfigs.create("releaseProduction") {
+                    storeFile = rootProject.file(keystoreProperties.getProperty("storeFile"))
+                    storePassword = keystoreProperties.getProperty("storePassword")
+                    keyAlias = keystoreProperties.getProperty("keyAlias")
+                    keyPassword = keystoreProperties.getProperty("keyPassword")
+                }
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

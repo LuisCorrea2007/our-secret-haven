@@ -28,7 +28,7 @@ import io.github.jan.supabase.auth.providers.builtin.Email
 import kotlinx.coroutines.launch
 
 @Composable
-fun AuthScreen(modifier: Modifier = Modifier) {
+fun AuthScreen(modifier: Modifier = Modifier, onAuthenticated: () -> Unit = {}) {
     val client = remember { SupabaseClientProvider.client }
     val scope = rememberCoroutineScope()
     var email by remember { mutableStateOf("") }
@@ -114,6 +114,7 @@ fun AuthScreen(modifier: Modifier = Modifier) {
                                         this.password = password
                                     }
                                     displayEmail = client.auth.currentUserOrNull()?.email
+                                    onAuthenticated()
                                     message = if (displayEmail == null) {
                                         "Cuenta enviada. Si el proyecto exige confirmar el correo, revisa tu bandeja antes de entrar."
                                     } else {
@@ -125,6 +126,7 @@ fun AuthScreen(modifier: Modifier = Modifier) {
                                         this.password = password
                                     }
                                     displayEmail = client.auth.currentUserOrNull()?.email ?: email.trim()
+                                    onAuthenticated()
                                     message = "Sesión iniciada correctamente."
                                 }
                             } catch (_: Exception) {

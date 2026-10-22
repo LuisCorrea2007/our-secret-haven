@@ -1,6 +1,8 @@
 package app.espacionuestro.android.ui
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -11,11 +13,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import app.espacionuestro.android.data.remote.SupabaseClientProvider
+import io.github.jan.supabase.auth.auth
 
 private data class Destination(val label: String, val icon: ImageVector)
 
 @Composable
 fun EspacioNuestroApp() {
+    val client = SupabaseClientProvider.client
+    var signedIn by remember { mutableStateOf(client?.auth?.currentUserOrNull() != null) }
+    if (SupabaseClientProvider.isConfigured && !signedIn) {
+        AuthScreen(
+            Modifier.fillMaxSize().padding(20.dp),
+            onAuthenticated = { signedIn = true }
+        )
+        return
+    }
+
     val destinations = listOf(
         Destination("Panel", Icons.Default.AutoAwesome),
         Destination("Notas", Icons.Default.EditNote),
@@ -24,62 +38,38 @@ fun EspacioNuestroApp() {
         Destination("Citas", Icons.Default.CalendarMonth),
         Destination("Deseos", Icons.Default.AutoAwesome),
         Destination("Diario", Icons.Default.FavoriteBorder),
-        Destination("Diversión", Icons.Default.SentimentSatisfiedAlt)
+        Destination("Diversión", Icons.Default.SentimentSatisfiedAlt),
+        Destination("Ajustes", Icons.Default.Settings)
     )
     var selected by remember { mutableIntStateOf(0) }
-    var settingsOpen by remember { mutableStateOf(false) }
-
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            Surface(
-                color = MaterialTheme.colorScheme.background.copy(alpha = 0.97f),
-                shadowElevation = 0.dp,
-                tonalElevation = 0.dp
-            ) {
+            Surface(color = MaterialTheme.colorScheme.background.copy(alpha = .97f)) {
                 Column {
-                    Row(
-                        Modifier.fillMaxWidth().height(62.dp).padding(horizontal = 18.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(9.dp)
-                    ) {
+                    Row(Modifier.fillMaxWidth().height(62.dp).padding(horizontal = 18.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(9.dp)) {
                         Surface(shape = CircleShape, color = MaterialTheme.colorScheme.primaryContainer) {
-                            Icon(Icons.Default.Favorite, contentDescription = null, tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.padding(8.dp).size(18.dp))
+                            Icon(Icons.Default.Favorite, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(8.dp).size(18.dp))
                         }
-                        Text("Nuestro Espacio", style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
-                        IconButton(onClick = { settingsOpen = true }) {
-                            Icon(Icons.Default.Settings, contentDescription = "Ajustes", tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                        }
+                        Text("Nuestro Espacio", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
+                        IconButton(onClick = { selected = 8 }) { Icon(Icons.Default.Settings, "Ajustes", tint = MaterialTheme.colorScheme.onSurfaceVariant) }
                     }
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.45f))
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = .45f))
                 }
             }
         },
         bottomBar = {
-            Surface(color = MaterialTheme.colorScheme.background.copy(alpha = 0.98f)) {
+            Surface(color = MaterialTheme.colorScheme.background.copy(alpha = .98f)) {
                 Column {
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.45f))
-                    NavigationBar(
-                        containerColor = MaterialTheme.colorScheme.background,
-                        tonalElevation = 0.dp,
-                        windowInsets = WindowInsets.navigationBars
-                    ) {
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = .45f))
+                    Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
                         destinations.forEachIndexed { index, destination ->
                             NavigationBarItem(
-                                selected = selected == index,
-                                onClick = { selected = index },
-                                icon = { Icon(destination.icon, contentDescription = destination.label, modifier = Modifier.size(21.dp)) },
+                                modifier = Modifier.width(72.dp), selected = selected == index, onClick = { selected = index },
+                                icon = { Icon(destination.icon, destination.label, Modifier.size(21.dp)) },
                                 label = { Text(destination.label, maxLines = 1, style = MaterialTheme.typography.labelSmall) },
                                 alwaysShowLabel = true,
-                                colors = NavigationBarItemDefaults.colors(
-                                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                                    selectedTextColor = MaterialTheme.colorScheme.primary,
-                                    indicatorColor = MaterialTheme.colorScheme.secondaryContainer,
-                                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
+                                colors = NavigationBarItemDefaults.colors(selectedIconColor = MaterialTheme.colorScheme.primary, selectedTextColor = MaterialTheme.colorScheme.primary, indicatorColor = MaterialTheme.colorScheme.secondaryContainer, unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant, unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant)
                             )
                         }
                     }
@@ -96,15 +86,8 @@ fun EspacioNuestroApp() {
             4 -> CalendarScreen(contentModifier)
             5 -> WishesScreen(contentModifier)
             6 -> DiaryScreen(contentModifier)
-            else -> FunScreen(contentModifier)
+            7 -> FunScreen(contentModifier)
+            else -> SettingsScreen(contentModifier) { signedIn = false }
         }
-    }
-    if (settingsOpen) {
-        AlertDialog(
-            onDismissRequest = { settingsOpen = false },
-            title = { Text("Ajustes", style = MaterialTheme.typography.headlineSmall) },
-            text = { Text("La configuración de perfil y sincronización compartida se completará cuando se conecte de forma segura el backend. Por ahora, tus datos locales permanecen en este dispositivo.") },
-            confirmButton = { TextButton(onClick = { settingsOpen = false }) { Text("Cerrar") } }
-        )
     }
 }
