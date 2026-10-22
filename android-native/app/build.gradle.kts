@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp")
 }
 
@@ -17,7 +18,27 @@ android {
         versionName = "0.2.0"
     }
 
-    buildFeatures { compose = true }
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
+
+    val localProperties = java.util.Properties().apply {
+        val localFile = rootProject.file("local.properties")
+        if (localFile.exists()) localFile.inputStream().use { load(it) }
+    }
+    fun configValue(property: String, environment: String): String =
+        (localProperties.getProperty(property) ?: System.getenv(environment) ?: "")
+            .replace("\\", "\\\\")
+            .replace("\"", "\\\"")
+
+    val supabaseUrl = configValue("supabase.url", "SUPABASE_URL")
+    val supabasePublishableKey = configValue("supabase.publishableKey", "SUPABASE_PUBLISHABLE_KEY")
+
+    defaultConfig {
+        buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
+        buildConfigField("String", "SUPABASE_PUBLISHABLE_KEY", "\"$supabasePublishableKey\"")
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -38,6 +59,9 @@ android {
 
 dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2025.10.00")
+    implementation(platform("io.github.jan-tennert.supabase:bom:3.5.0"))
+    implementation("io.github.jan-tennert.supabase:auth-kt")
+    implementation("io.ktor:ktor-client-android:3.0.3")
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
