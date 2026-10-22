@@ -80,6 +80,7 @@ private fun AboutScreen(modifier: Modifier = Modifier) {
                 Text("La app está construida con Kotlin y componentes nativos de Android.")
             }
         }
-        MoreFeaturesScreen()\n        AuthScreen()
+        MoreFeaturesScreen()
+        AuthScreen()
     }
 }
