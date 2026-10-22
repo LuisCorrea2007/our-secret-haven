@@ -1,5 +1,8 @@
 package app.espacionuestro.android.ui
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -7,7 +10,9 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.PhotoLibrary
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -19,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 
 private data class Destination(val label: String, val icon: ImageVector)
 
@@ -60,22 +66,17 @@ fun EspacioNuestroApp() {
 
 @Composable
 private fun AboutScreen(modifier: Modifier = Modifier) {
-    androidx.compose.foundation.layout.Column(
-        modifier = modifier
-            .androidxComposeFillMaxSize()
-            .padding(androidx.compose.ui.unit.dp(24)),
-        verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(androidx.compose.ui.unit.dp(12))
+    Column(
+        modifier = modifier.fillMaxSize().padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text("Nuestro espacio", style = androidx.compose.material3.MaterialTheme.typography.headlineMedium)
+        Text("Nuestro espacio", style = MaterialTheme.typography.headlineMedium)
         Text("Un lugar privado para guardar recuerdos, escribirnos y planear momentos juntos.")
-        androidx.compose.material3.Card {
-            androidx.compose.foundation.layout.Column(Modifier.padding(androidx.compose.ui.unit.dp(16))) {
-                Text("Diseñada para ustedes", style = androidx.compose.material3.MaterialTheme.typography.titleMedium)
+        Card {
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("Diseñada para ustedes", style = MaterialTheme.typography.titleMedium)
                 Text("La app está construida con Kotlin y componentes nativos de Android.")
             }
         }
     }
 }
-
-private fun Modifier.androidxComposeFillMaxSize(): Modifier =
-    this.then(androidx.compose.foundation.layout.fillMaxSize())
