@@ -1,35 +1,37 @@
 # Espacio Nuestro — Android nativo
 
-Aplicación Android nativa de Espacio Nuestro, separada de la implementación web React.
+Aplicación Android nativa construida con Kotlin y Jetpack Compose, mantenida en paralelo a la aplicación web React. Las pantallas principales no usan WebView.
 
 ## Stack
 
-- Kotlin
-- Jetpack Compose + Material 3
-- Single Activity
-- ViewModel + StateFlow/UDF
-- Room para persistencia local
-- DataStore para preferencias
-- WorkManager para tareas persistentes
-- CameraX para cámara
-- Android Biometric para autenticación biométrica
+- Kotlin + Jetpack Compose + Material 3.
+- Single Activity y navegación inferior nativa.
+- ViewModel + StateFlow y flujo de estado unidireccional.
+- Room para notas locales y persistencia offline.
+- DataStore y WorkManager disponibles en dependencias; integración funcional pendiente.
+- CameraX disponible en dependencias; captura integrada en una fase posterior.
+- Android Photo Picker para seleccionar imágenes y vídeos sin permiso general de almacenamiento.
+- Android Biometric disponible en dependencias; flujo de desbloqueo pendiente.
 
-La arquitectura sigue las recomendaciones actuales de Android para una UI impulsada por estado, separación de capas y repositorios. citehttps://developer.android.com/topic/architecture
+## Módulos implementados en esta fase
 
-## Estado actual
+- **Inicio:** panel inicial y contador de días desde el 24 de junio de 2025.
+- **Notas:** crear, listar, marcar como favoritas y eliminar notas. Se guardan localmente con Room y funcionan sin conexión.
+- **Galería:** selector nativo de Android para imágenes y vídeos; la selección se muestra en una cuadrícula local y no se carga a un servidor.
+- **Agenda:** primera pantalla informativa; eventos persistentes, sincronización y recordatorios aún pendientes.
+- **Nosotros:** pantalla informativa nativa.
+- **CI:** GitHub Actions compila `assembleDebug` en esta rama y publica el APK como artefacto si la compilación termina correctamente.
 
-La rama `android-native` contiene el esqueleto compilable del proyecto, navegación inferior y la base para persistencia y capacidades nativas.
+## Compilar localmente
 
-## Próximos módulos
+Requisitos: Android Studio actualizado, JDK 17 y Android SDK 36.
 
-1. Autenticación y sesión persistente.
-2. Dashboard con contador de relación.
-3. Notas + respuestas + adjuntos.
-4. Galería + cámara + MediaStore.
-5. Calendario + recordatorios + notificaciones.
-6. Diario y deseos.
-7. Chat efímero.
-8. Biometría y almacenamiento seguro.
-9. Sincronización con el backend existente.
-10. Widgets y deep links.
-11. Pruebas instrumentadas y release AAB/APK.
+Desde este directorio ejecuta `gradle assembleDebug`.
+
+Si la compilación termina correctamente, el APK de depuración queda en `app/build/outputs/apk/debug/app-debug.apk`.
+
+## Límites conocidos
+
+Esta es una primera entrega funcional, no una versión lista para producción. Aún no incluye autenticación conectada al backend, sincronización entre dos dispositivos, cifrado de la base local, carga remota de medios, chat, push, widgets ni generación firmada para Play Store. Las notas permanecen en el dispositivo donde se crearon hasta implementar sincronización explícita.
+
+No se deben incluir claves privadas, contraseñas, tokens ni archivos de firma en el repositorio. Para publicar una versión release se configurará la firma mediante secretos de CI.
