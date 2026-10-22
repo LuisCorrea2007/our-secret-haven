@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -6,9 +8,27 @@ plugins {
     id("com.google.devtools.ksp")
 }
 
+val localProperties = Properties().apply {
+    val localFile = rootProject.file("local.properties")
+    if (localFile.exists()) localFile.inputStream().use { load(it) }
+}
+
+fun configValue(property: String, environment: String): String =
+    (localProperties.getProperty(property) ?: System.getenv(environment) ?: "")
+        .replace("\\", "\\\\")
+        .replace("\"", "\\\"")
+
+val supabaseUrl = configValue("supabase.url", "SUPABASE_URL")
+val supabasePublishableKey = configValue("supabase.publishableKey", "SUPABASE_PUBLISHABLE_KEY")
+
 android {
     namespace = "app.espacionuestro.android"
     compileSdk = 36
+
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
 
     defaultConfig {
         applicationId = "app.espacionuestro.android"
@@ -16,26 +36,6 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "0.2.0"
-    }
-
-    buildFeatures {
-        compose = true
-        buildConfig = true
-    }
-
-    val localProperties = java.util.Properties().apply {
-        val localFile = rootProject.file("local.properties")
-        if (localFile.exists()) localFile.inputStream().use { load(it) }
-    }
-    fun configValue(property: String, environment: String): String =
-        (localProperties.getProperty(property) ?: System.getenv(environment) ?: "")
-            .replace("\\", "\\\\")
-            .replace("\"", "\\\"")
-
-    val supabaseUrl = configValue("supabase.url", "SUPABASE_URL")
-    val supabasePublishableKey = configValue("supabase.publishableKey", "SUPABASE_PUBLISHABLE_KEY")
-
-    defaultConfig {
         buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
         buildConfigField("String", "SUPABASE_PUBLISHABLE_KEY", "\"$supabasePublishableKey\"")
     }
