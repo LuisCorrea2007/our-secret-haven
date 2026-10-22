@@ -57,7 +57,7 @@ fun EspacioNuestroApp() {
     ) { padding ->
         val contentModifier = Modifier.padding(padding)
         when (selected) {
-            0 -> HomeScreen(contentModifier)
+            0 -> HomeScreen(contentModifier, onOpenNotes = { selected = 1 }, onOpenGallery = { selected = 2 }, onOpenAgenda = { selected = 3 }, onOpenMore = { selected = 4 })
             1 -> NotesScreen(contentModifier)
             2 -> GalleryScreen(contentModifier)
             3 -> CalendarScreen(contentModifier)
@@ -80,6 +80,6 @@ private fun AboutScreen(modifier: Modifier = Modifier) {
                 Text("La app está construida con Kotlin y componentes nativos de Android.")
             }
         }
-        AuthScreen()
+        MoreFeaturesScreen()\n        AuthScreen()
     }
 }
