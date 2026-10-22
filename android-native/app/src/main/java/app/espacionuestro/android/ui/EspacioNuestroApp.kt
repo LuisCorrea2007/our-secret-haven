@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Favorite
@@ -67,7 +69,7 @@ fun EspacioNuestroApp() {
 @Composable
 private fun AboutScreen(modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier.fillMaxSize().padding(24.dp),
+        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text("Nuestro espacio", style = MaterialTheme.typography.headlineMedium)
@@ -78,5 +80,6 @@ private fun AboutScreen(modifier: Modifier = Modifier) {
                 Text("La app está construida con Kotlin y componentes nativos de Android.")
             }
         }
+        AuthScreen()
     }
 }
